@@ -27,7 +27,7 @@ public class Utils {
 
         for (int r = 1; r < rows.length; r++) {
             String currentRow = rows[r];
-            String finalString = "";
+            String trimmedString = "";
             String p1 = "";
             String p2 = "";
             String p3 = "";
@@ -47,8 +47,26 @@ public class Utils {
                 p3 = currentRow.substring(locOfEndQuot + 1, locOfPercent);
                 p4 = currentRow.substring(locOfPercent + 1);
             }
-            finalString = p1 + p2 + p3 + p4;
-            System.out.println(finalString);
+            trimmedString = p1 + p2 + p3 + p4;
+
+            String[] dataPoints = trimmedString.split(",");
+
+            for (int i = 0; i < dataPoints.length; i++) {
+                double votesDem = Double.parseDouble(dataPoints[0]);
+                double votesGOP = Double.parseDouble(dataPoints[1]);
+                double totalVotes = Double.parseDouble(dataPoints[2]);
+                double percentDem = Double.parseDouble(dataPoints[3]);
+                double percentGOP = Double.parseDouble(dataPoints[4]);
+                double voteDiff = Double.parseDouble(dataPoints[5]);
+                double percentDiff = Double.parseDouble(dataPoints[6]);
+                String stateAbrr = dataPoints[7];
+                String countyName = dataPoints[8];
+                int fips = Integer.parseInt(dataPoints[9]);
+
+                ElectionResult currentResult = new ElectionResult(votesDem, votesGOP, totalVotes, percentDem, percentGOP, voteDiff, percentDiff, stateAbrr, countyName, fips);
+                results.add(currentResult);
+            }
+
         }
 
         return results;
