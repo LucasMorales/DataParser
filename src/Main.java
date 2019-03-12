@@ -8,17 +8,20 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        String[] electionRawLines = Utils.readFilesAsCleanedLines("2016_Presidential_Results.csv", 1);
-        String[] educationRawLines = Utils.readFilesAsCleanedLines("Education.csv", 5);
-        String[] employmentRawLines = Utils.readFilesAsCleanedLines("Unemployment.csv", 8);
+
+        loadAllData("2016_Presidential_Results.csv", "Education.csv", "Unemployment.csv");
+
+
 
 
 
     }
 
-
-
-
+    public static void loadAllData(String electionFilepath, String educationFilepath, String employmentFilepath) {
+        String[] electionRawLines = Utils.readFilesAsCleanedLines(electionFilepath, 1);
+        String[] educationRawLines = Utils.readFilesAsCleanedLines(educationFilepath, 5);
+        String[] employmentRawLines = Utils.readFilesAsCleanedLines(employmentFilepath, 8);
+    }
 
 
 }
