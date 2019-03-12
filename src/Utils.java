@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Utils {
@@ -20,57 +19,44 @@ public class Utils {
         return output.toString();
     }
 
-    public static ArrayList<ElectionResult> parse2016ElectionResults(String data) {
-        ArrayList<ElectionResult> results = new ArrayList<>();
+    public static String[] readFilesAsCleanedLines(String filepath, int linesToSkip) {
+        String data = readFileAsString(filepath);
+        String[] lines = data.split("\n");
 
-        String[] rows = data.split("\n");
-
-        for (int r = 1; r < rows.length; r++) {
-            String currentRow = rows[r];
-            String trimmedString = "";
-            String p1 = "";
-            String p2 = "";
-            String p3 = "";
-            String p4 = "";
-
-            if (currentRow.indexOf("\"") == -1) {
-                int locOfPercent = currentRow.indexOf("%");
-                p1 = currentRow.substring(2, locOfPercent);
-                p2 = currentRow.substring(locOfPercent + 1);
-            } else {
-                int locOfStartQuot = currentRow.indexOf("\"");
-                p1 = currentRow.substring(2, locOfStartQuot);
-                int locOfComma = currentRow.indexOf(",", locOfStartQuot);
-                p2 = currentRow.substring(locOfStartQuot + 1, locOfComma);
-                int locOfEndQuot = currentRow.indexOf("\"", locOfComma);
-                int locOfPercent = currentRow.indexOf("%");
-                p3 = currentRow.substring(locOfEndQuot + 1, locOfPercent);
-                p4 = currentRow.substring(locOfPercent + 1);
-            }
-            trimmedString = p1 + p2 + p3 + p4;
-
-            String[] dataPoints = trimmedString.split(",");
-
-            for (int i = 0; i < dataPoints.length; i++) {
-                double votesDem = Double.parseDouble(dataPoints[0]);
-                double votesGOP = Double.parseDouble(dataPoints[1]);
-                double totalVotes = Double.parseDouble(dataPoints[2]);
-                double percentDem = Double.parseDouble(dataPoints[3]);
-                double percentGOP = Double.parseDouble(dataPoints[4]);
-                double voteDiff = Double.parseDouble(dataPoints[5]);
-                double percentDiff = Double.parseDouble(dataPoints[6]);
-                String stateAbrr = dataPoints[7];
-                String countyName = dataPoints[8];
-                int fips = Integer.parseInt(dataPoints[9]);
-
-                ElectionResult currentResult = new ElectionResult(votesDem, votesGOP, totalVotes, percentDem, percentGOP, voteDiff, percentDiff, stateAbrr, countyName, fips);
-                results.add(currentResult);
-            }
-
+        for (String line : lines) {
+            line = cleanLine(line);
         }
 
-        return results;
-
+        return lines;
     }
+
+    private static String cleanLine(String line) {
+        int locOfStartQuote = line.indexOf("\"");
+        int locOfEndQuote = line.indexOf("\"", locOfStartQuote);
+
+        while (locOfStartQuote != -1 && locOfEndQuote != -1) { // while there are still commas, keep trimming
+            line = cleanSubString(line, locOfStartQuote, locOfEndQuote);
+
+        }
+        return line;
+    }
+
+    private static String cleanSubString(String line, int locOfStartQuote, int locOfEndQuote) {
+        String beforeQuotes = line.substring(0, locOfStartQuote);
+        String afterQuotes = line.substring(locOfEndQuote + 1);
+
+        String betweenQuotes = line.substring(locOfStartQuote + 1, locOfEndQuote);
+        betweenQuotes = removeBadChars(betweenQuotes);
+
+        return beforeQuotes + betweenQuotes + afterQuotes;
+    }
+
+    private static String removeBadChars(String toClean) {
+        toClean = toClean.replace(",", "");
+        toClean = toClean.replace("%", "");
+        toClean = toClean.trim();
+        return toClean;
+    }
+
 
 }
