@@ -8,9 +8,10 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        String data = Utils.readFileAsString("data/2016_Presidential_Results.csv");
+        String[] electionRawLines = Utils.readFilesAsCleanedLines("2016_Presidential_Results.csv", 1);
+        String[] educationRawLines = Utils.readFilesAsCleanedLines("Education.csv", 5);
+        String[] employmentRawLines = Utils.readFilesAsCleanedLines("Unemployment.csv", 8);
 
-        ArrayList<ElectionResult> results = Utils.parse2016ElectionResults(data);
 
 
     }
